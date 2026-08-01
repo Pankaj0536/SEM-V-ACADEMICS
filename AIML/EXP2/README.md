@@ -18,7 +18,7 @@ step4: Choose your saved file from your system (it should be `.arff` formated)
 
 step5 : Click to `Visualize All`
 
-step6 : Next Go to `Classify` next to `preprocessor` .
+step6 : Go to `Classify` next to `preprocessor` .
 
 Step6 : Go to `test options ` Check `Cross-Validation` Folds : `4 or less than 10 `(Cross-Validation is in Test)
 

@@ -11,5 +11,5 @@
 </details>
 
 <details>
-<summary><strong>📊 Notes</strong></summary>
+<summary><strong>Syllabus</strong></summary>
 </details>
