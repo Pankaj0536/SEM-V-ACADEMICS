@@ -12,4 +12,8 @@
 
 <details>
 <summary><strong>Syllabus</strong></summary>
+
+📄 [AIML SYLLABUS](https://github.com/Pankaj0536/SEM-V-ACADEMICS/blob/main/AIML/AIML%20SYLLABUS.pdf)
+
+</details>
 </details>
