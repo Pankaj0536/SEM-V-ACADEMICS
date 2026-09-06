@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pankaj Rana — Object Detected</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0D1117;
+    --panel: #141B24;
+    --panel-2: #1B232E;
+    --line: #2A3441;
+    --text: #E6EDF3;
+    --muted: #7D8590;
+    --lime: #B4F461;
+    --cyan: #5EEAD4;
+    --amber: #F5A623;
+    --radius: 3px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--lime);color:#0D1117;}
+
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  a{color:inherit;text-decoration:none;}
+
+  .wrap{
+    max-width:880px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:100;
+    background:rgba(13,17,23,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    height:60px;
+  }
+  .nav-brand{font-family:'Space Grotesk';font-weight:600;font-size:17px;}
+  .nav-brand span{color:var(--lime);}
+  .nav-links{display:flex;gap:26px;font-size:14px;color:var(--muted);}
+  .nav-links a:hover{color:var(--lime);}
+  @media (max-width:640px){ .nav-links{display:none;} }
+
+  /* ---------- HERO / VIEWFINDER ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+    padding:100px 0 60px;
+  }
+  .viewfinder{
+    position:relative;
+    border:1px solid var(--line);
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0/100% 33.33%,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0/33.33% 100%,
+      var(--panel);
+    background-color: rgba(20,27,36,0.4);
+    padding:56px 32px;
+    overflow:hidden;
+  }
+  .corner{
+    position:absolute;
+    width:22px;height:22px;
+    border:2px solid var(--lime);
+  }
+  .corner.tl{top:-1px;left:-1px;border-right:none;border-bottom:none;}
+  .corner.tr{top:-1px;right:-1px;border-left:none;border-bottom:none;}
+  .corner.bl{bottom:-1px;left:-1px;border-right:none;border-top:none;}
+  .corner.br{bottom:-1px;right:-1px;border-left:none;border-top:none;}
+
+  .scan-line{
+    position:absolute;
+    left:0;right:0;top:0;
+    height:2px;
+    background:linear-gradient(90deg, transparent, var(--lime), transparent);
+    opacity:0.9;
+    animation: scan 2.2s ease-in-out 1;
+    animation-fill-mode: forwards;
+  }
+  @keyframes scan{
+    0%{top:0; opacity:0;}
+    8%{opacity:1;}
+    92%{opacity:1;}
+    100%{top:100%; opacity:0;}
+  }
+
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    padding:4px 9px;
+    border:1px solid var(--lime);
+    color:var(--lime);
+    border-radius:2px;
+    opacity:0;
+    animation: pop-in 0.5s ease forwards;
+  }
+  .tag .dot{width:5px;height:5px;background:var(--lime);border-radius:50%;}
+  @keyframes pop-in{
+    from{opacity:0; transform:translateY(4px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .hero-tag-1{animation-delay: 1.9s;}
+
+  h1.title{
+    font-family:'Space Grotesk';
+    font-weight:700;
+    font-size:clamp(38px, 7vw, 68px);
+    line-height:1.05;
+    margin:20px 0 14px;
+    letter-spacing:-0.01em;
+  }
+  .title .accent{color:var(--lime);}
+
+  .role-line{
+    font-size:17px;
+    color:var(--muted);
+    max-width:520px;
+    margin-bottom:26px;
+  }
+
+  .confidence-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:8px;
+  }
+  .conf-chip{
+    font-family:'JetBrains Mono';
+    font-size:12px;
+    color:var(--cyan);
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    padding:6px 10px;
+    border-radius:2px;
+    opacity:0;
+    animation: pop-in 0.45s ease forwards;
+  }
+  .conf-chip:nth-child(1){animation-delay:2.05s;}
+  .conf-chip:nth-child(2){animation-delay:2.15s;}
+  .conf-chip:nth-child(3){animation-delay:2.25s;}
+  .conf-chip:nth-child(4){animation-delay:2.35s;}
+
+  .hero-links{
+    display:flex; gap:16px; margin-top:34px; flex-wrap:wrap;
+  }
+  .btn{
+    font-family:'Space Grotesk';
+    font-weight:600;
+    font-size:14px;
+    padding:11px 20px;
+    border-radius:2px;
+    border:1px solid var(--lime);
+  }
+  .btn.primary{background:var(--lime); color:#0D1117;}
+  .btn.ghost{color:var(--text); border-color:var(--line);}
+  .btn.ghost:hover{border-color:var(--cyan); color:var(--cyan);}
+
+  /* ---------- SECTION SHARED ---------- */
+  section{padding:90px 0;}
+  .eyebrow-box{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:'JetBrains Mono';
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:14px;
+  }
+  .eyebrow-box .id{color:var(--amber);}
+  h2.section-title{
+    font-family:'Space Grotesk';
+    font-weight:600;
+    font-size:clamp(26px, 4vw, 34px);
+    margin-bottom:34px;
+    max-width:620px;
+  }
+  .section-title .hl{color:var(--lime);}
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap:40px;
+  }
+  @media (max-width:700px){ .about-grid{grid-template-columns:1fr;} }
+  .about-text p{color:var(--muted); font-size:15.5px; margin-bottom:16px;}
+  .about-text strong{color:var(--text); font-weight:600;}
+
+  .stat-box{
+    border:1px solid var(--line);
+    padding:18px;
+    background:var(--panel);
+  }
+  .stat-box + .stat-box{border-top:none;}
+  .stat-num{font-family:'Space Grotesk'; font-size:26px; font-weight:700; color:var(--cyan);}
+  .stat-label{font-size:13px; color:var(--muted); margin-top:2px;}
+
+  /* ---------- DETECTED OBJECTS (skills) ---------- */
+  .skill-groups{display:flex; flex-direction:column; gap:22px;}
+  .skill-group-label{
+    font-family:'JetBrains Mono';
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:10px;
+    display:block;
+  }
+  .skill-boxes{display:flex; flex-wrap:wrap; gap:10px;}
+  .skill-box{
+    position:relative;
+    border:1px solid var(--line);
+    padding:9px 14px 9px 14px;
+    font-size:14px;
+    background:var(--panel);
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .skill-box:hover{border-color:var(--lime); transform:translateY(-2px);}
+  .skill-box .conf{
+    font-family:'JetBrains Mono';
+    font-size:10px;
+    color:var(--lime);
+    margin-left:8px;
+  }
+
+  /* ---------- PROJECTS ---------- */
+  .project-card{
+    position:relative;
+    border:1px solid var(--line);
+    background:var(--panel);
+    padding:30px;
+    margin-bottom:22px;
+    transition: border-color .25s ease;
+  }
+  .project-card:hover{border-color:var(--lime);}
+  .project-card:hover .corner{opacity:1;}
+  .project-card .corner{
+    width:16px;height:16px;
+    opacity:0;
+    transition:opacity .2s ease;
+  }
+  .project-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  .project-title{font-family:'Space Grotesk'; font-weight:600; font-size:19px;}
+  .project-conf{
+    font-family:'JetBrains Mono';
+    font-size:11px;
+    color:var(--amber);
+    white-space:nowrap;
+    border:1px solid var(--line);
+    padding:3px 8px;
+  }
+  .project-desc{color:var(--muted); font-size:14.5px; margin-bottom:14px;}
+  .project-stack{display:flex; flex-wrap:wrap; gap:6px;}
+  .stack-pill{
+    font-family:'JetBrains Mono';
+    font-size:11px;
+    color:var(--cyan);
+    border:1px solid var(--line);
+    padding:3px 8px;
+  }
+
+  /* ---------- TIMELINE (internship + education) ---------- */
+  .tl-item{
+    display:grid;
+    grid-template-columns: 130px 1fr;
+    gap:20px;
+    padding:22px 0;
+    border-top:1px solid var(--line);
+  }
+  .tl-item:last-child{border-bottom:1px solid var(--line);}
+  .tl-date{font-family:'JetBrains Mono'; font-size:12px; color:var(--amber);}
+  .tl-role{font-family:'Space Grotesk'; font-weight:600; font-size:16px; margin-bottom:4px;}
+  .tl-org{color:var(--muted); font-size:13px; margin-bottom:8px;}
+  .tl-desc{color:var(--muted); font-size:14px;}
+  @media (max-width:560px){ .tl-item{grid-template-columns:1fr;} }
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  .contact-box{
+    border:1px solid var(--line);
+    background:var(--panel);
+    padding:50px 36px;
+    text-align:center;
+    position:relative;
+  }
+  .contact-box h2{
+    font-family:'Space Grotesk';
+    font-weight:700;
+    font-size:clamp(26px,5vw,38px);
+    margin-bottom:14px;
+  }
+  .contact-box p{color:var(--muted); max-width:460px; margin:0 auto 28px;}
+  .contact-links{display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
+
+  footer{
+    padding:34px 0 50px;
+    text-align:center;
+    color:var(--muted);
+    font-size:12.5px;
+    font-family:'JetBrains Mono';
+  }
+
+  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:5px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-brand">pankaj<span>.detect()</span></div>
+    <div class="nav-links">
+      <a href="#about">about</a>
+      <a href="#skills">skills</a>
+      <a href="#projects">projects</a>
+      <a href="#experience">experience</a>
+      <a href="#contact">contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="viewfinder">
+      <div class="scan-line"></div>
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+
+      <span class="tag hero-tag-1"><span class="dot"></span>object_detected: human, class=engineer</span>
+
+      <h1 class="title">Pankaj Rana<br>trained on <span class="accent">real problems.</span></h1>
+      <p class="role-line">Aspiring AI/ML engineer who teaches computers to see — currently obsessed with computer vision, backend systems, and convincing dustbins to text me when they're full.</p>
+
+      <div class="confidence-row">
+        <span class="conf-chip">class: ml_engineer — conf 0.94</span>
+        <span class="conf-chip">class: backend_dev — conf 0.88</span>
+        <span class="conf-chip">class: overthinker — conf 0.99</span>
+        <span class="conf-chip">location: Mumbai, IN</span>
+      </div>
+
+      <div class="hero-links">
+        <a class="btn primary" href="#projects">See the evidence →</a>
+        <a class="btn ghost" href="#contact">Hire this model</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="eyebrow-box"><span class="id">[01]</span> inference log</div>
+    <h2 class="section-title">What the model <span class="hl">actually does</span></h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm a Computer Engineering student at <strong>SJCEM</strong>, currently a few semesters deep into turning coffee and Stack Overflow tabs into working software. My focus is <strong>AI/ML and backend development</strong> — I like systems that look at the world (through a camera, a dataset, a spreadsheet of chaos) and make a decision about it.</p>
+        <p>Most recently I spent a stint at <strong>WISERLI</strong> teaching a model to recognize an overflowing dustbin from a live camera feed, which sounds simple until you realize garbage doesn't pose nicely for photos. Outside of that, I build web platforms, poke at Docker, and I'm slowly making friends with Hugging Face.</p>
+        <p>I care about shipping things that work in the real world, not just in a notebook labeled <em>final_final_v3.ipynb</em>.</p>
+      </div>
+      <div>
+        <div class="stat-box"><div class="stat-num">3+</div><div class="stat-label">shipped projects, zero abandoned repos (mostly)</div></div>
+        <div class="stat-box"><div class="stat-num">1</div><div class="stat-label">CV internship, countless dustbin screenshots</div></div>
+        <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">languages spoken: English, Hindi, Marathi</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="eyebrow-box"><span class="id">[02]</span> detected classes</div>
+    <h2 class="section-title">Objects found in <span class="hl">frame</span></h2>
+
+    <div class="skill-groups">
+      <div>
+        <span class="skill-group-label">// languages</span>
+        <div class="skill-boxes">
+          <div class="skill-box">Python <span class="conf">0.97</span></div>
+          <div class="skill-box">C++ <span class="conf">0.85</span></div>
+          <div class="skill-box">Java <span class="conf">0.82</span></div>
+          <div class="skill-box">C <span class="conf">0.80</span></div>
+          <div class="skill-box">JavaScript <span class="conf">0.83</span></div>
+        </div>
+      </div>
+      <div>
+        <span class="skill-group-label">// ai / ml stack</span>
+        <div class="skill-boxes">
+          <div class="skill-box">PyTorch <span class="conf">0.88</span></div>
+          <div class="skill-box">Ultralytics / YOLOv8 <span class="conf">0.95</span></div>
+          <div class="skill-box">NumPy <span class="conf">0.90</span></div>
+          <div class="skill-box">Pandas <span class="conf">0.90</span></div>
+          <div class="skill-box">Roboflow <span class="conf">0.89</span></div>
+          <div class="skill-box">Hugging Face <span class="conf">0.75</span></div>
+        </div>
+      </div>
+      <div>
+        <span class="skill-group-label">// web + infra</span>
+        <div class="skill-boxes">
+          <div class="skill-box">React.js <span class="conf">0.86</span></div>
+          <div class="skill-box">Node.js / Express <span class="conf">0.86</span></div>
+          <div class="skill-box">MongoDB <span class="conf">0.84</span></div>
+          <div class="skill-box">MySQL <span class="conf">0.80</span></div>
+          <div class="skill-box">Docker <span class="conf">0.78</span></div>
+          <div class="skill-box">Git / GitHub <span class="conf">0.93</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="eyebrow-box"><span class="id">[03]</span> bounding boxes</div>
+    <h2 class="section-title">Things I built that <span class="hl">didn't crash</span> (mostly)</h2>
+
+    <div class="project-card">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <div class="project-head">
+        <div class="project-title">Dustbin Overflow Detection System</div>
+        <div class="project-conf">conf: 0.93 — "trash, but make it smart"</div>
+      </div>
+      <p class="project-desc">A real-time computer vision system built on YOLOv8 that tells the difference between a dustbin that's fine and one that's had enough. Covered the whole pipeline myself: collecting and annotating data, training, evaluating, debugging, and testing on live inputs for smart waste management — because someone has to look at garbage so cities don't have to.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span><span class="stack-pill">YOLOv8</span><span class="stack-pill">Ultralytics</span><span class="stack-pill">Roboflow</span><span class="stack-pill">Google Colab</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <div class="project-head">
+        <div class="project-title">Swadscribe</div>
+        <div class="project-conf">conf: 0.90 — "farm to app, minus the farm"</div>
+      </div>
+      <p class="project-desc">A web platform connecting small restaurants with local food suppliers — supplier discovery, product catalogs, and real-time order tracking, so kitchens spend less time on phone calls and more time actually cooking.</p>
+      <div class="project-stack">
+        <span class="stack-pill">React.js</span><span class="stack-pill">Node.js</span><span class="stack-pill">Express.js</span><span class="stack-pill">MongoDB</span><span class="stack-pill">REST APIs</span><span class="stack-pill">Docker</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <div class="project-head">
+        <div class="project-title">Disk Scheduling Algorithm Analyser (DSAA)</div>
+        <div class="project-conf">conf: 0.87 — "OS algorithms, ranked"</div>
+      </div>
+      <p class="project-desc">A web-based platform that pits OS disk-scheduling algorithms against each other and figures out which one actually makes your processor faster — think of it as a leaderboard, but for algorithms that don't know they're competing.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Web Development</span><span class="stack-pill">Algorithms</span><span class="stack-pill">Systems Programming</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="eyebrow-box"><span class="id">[04]</span> training history</div>
+    <h2 class="section-title">Where the <span class="hl">weights</span> came from</h2>
+
+    <div class="tl-item">
+      <div class="tl-date">APR – MAY 2026</div>
+      <div>
+        <div class="tl-role">Vision Technology Intern</div>
+        <div class="tl-org">WISERLI</div>
+        <div class="tl-desc">Hands-on AI internship in Computer Vision and YOLOv8 — dataset prep, annotation, model training, evaluation, debugging, and real-time deployment for the dustbin detection system above.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2024 – 2028</div>
+      <div>
+        <div class="tl-role">B.Tech, Computer Engineering</div>
+        <div class="tl-org">St. John College of Engineering and Management (SJCEM), Palghar</div>
+        <div class="tl-desc">Coursework in AI &amp; software development, systems programming across C, C++, Java, and Python.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2023 – 2024</div>
+      <div>
+        <div class="tl-role">HSC (XII) — 80.67%</div>
+        <div class="tl-org">Utkarsh Vidhyalay, Virar</div>
+        <div class="tl-desc">The part of the origin story before the algorithms got involved.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="beyond">
+  <div class="wrap">
+    <div class="eyebrow-box"><span class="id">[05]</span> secondary detections</div>
+    <h2 class="section-title">Also spotted <span class="hl">in the wild</span></h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p><strong>ISTE</strong> — helped run events as an Event Management team member.</p>
+        <p><strong>SPC (Student Placement Committee), SJCEM</strong> — Public Relations team.</p>
+        <p><strong>BIS (Bureau of Indian Standards) community</strong> — Documentation team.</p>
+        <p><strong>Campus Ambassador</strong> for C-DAC Mumbai.</p>
+      </div>
+      <div class="about-text">
+        <p>Also attended <strong>Anveshnam 2025</strong> (paper presentation &amp; research writing), <strong>RoboMaze 2025</strong> (robo crafting), and a <strong>Google Cloud / GDG</strong> workshop on Colab and Google APIs — basically anywhere with free workshops and a certificate at the end.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-box">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <h2>Detection complete. <span style="color:var(--lime)">Now what?</span></h2>
+      <p>If you've read this far, the model thinks you might want to talk. Reach out — I reply faster than my training loop converges.</p>
+      <div class="contact-links">
+        <a class="btn primary" href="mailto:pankajrana2754@gmail.com">Email me →</a>
+        <a class="btn ghost" href="https://github.com/Pankaj0536" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn ghost" href="https://linkedin.com/in/Pankaj%20Rana" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn ghost" href="tel:+919371501454">+91 93715 01454</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  built by Pankaj Rana — Mumbai, India — model still training
+</footer>
+
+</body>
+</html>
