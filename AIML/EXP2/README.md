@@ -26,3 +26,6 @@ step7 : Click `Start`
 
 step8 : `Right Click` on to your Result. It will show some options - Go to `Visualize Tree` 
 
+<hr>
+
+### [Check Screenshots](./screenshots/)
