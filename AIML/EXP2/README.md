@@ -28,4 +28,4 @@ step8 : `Right Click` on to your Result. It will show some options - Go to `Visu
 
 <hr>
 
-### [Check Screenshots](./screenshots/)
+### [Check Screenshots](./Screenshots/)
