@@ -1,3 +1,9 @@
-# EXP-5 
-<H3>
-Aim : Implement a Perceptron Network for binary classification using logic gates. 
+# Soft Computing - Experiment 5
+
+## Aim
+
+Implement a perceptron network for binary classification using logic gates.
+
+## Contents
+
+- [Python implementation](./Code.py)

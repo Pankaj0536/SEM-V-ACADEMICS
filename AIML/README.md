@@ -1,19 +1,17 @@
-<details>
-<summary><strong>📊 Experiment Summary</strong></summary>
+# Artificial Intelligence and Machine Learning
 
-### Total Experiment: **10**
-### Added: **2**
+## Experiment Summary
 
-#### List of Experiments Added
-- EXP 2
-- EXP 4
+| Experiment | Topic / contents |
+| --- | --- |
+| [EXP1](./EXP1/) | DFS and BFS algorithms |
+| [EXP2](./EXP2/) | Classification, decision trees, and WEKA |
+| [EXP4](./EXP4/) | Linear regression |
+| [EXP5](./EXP5/) | Perceptron network for logic gates |
+| [EXP6](./EXP6/) | MLP digit classification with TensorFlow/Keras |
 
-</details>
+`EXP3` is not currently present in this repository.
 
-<details>
-<summary><strong>Syllabus</strong></summary>
+## Syllabus
 
-📄 [AIML SYLLABUS](https://github.com/Pankaj0536/SEM-V-ACADEMICS/blob/main/AIML/AIML%20SYLLABUS.pdf)
-
-</details>
-</details>
+[AIML syllabus](./AIML%20SYLLABUS.pdf)
