@@ -1,47 +1,49 @@
 # Semester V Academics
 
-Coursework, practical files, reports, tutorials, and reference material for Semester V.
+> A single place for Semester V syllabi, practical work, tutorials, code, reports, and reference material.
 
-## Quick Links
+## Start Here
 
-- [Semester V syllabus](./SEM-V-Syllabus.pdf)
-- [Artificial Intelligence and Machine Learning](./AIML/)
-- [Soft Computing](./SC/)
-- [Theory of Computation and Systems](./TCS/)
-- [Web Technology Lab](./WTL/)
-- [Reference resources](./RES/)
+| Need | Open |
+| --- | --- |
+| Semester-wide syllabus | [SEM-V syllabus](./SEM-V-Syllabus.pdf) |
+| AI/ML experiments | [AIML](./AIML/) |
+| Soft Computing experiments | [SC](./SC/) |
+| Tutorials and PDFs | [TCS](./TCS/) |
+| Web development work | [WTL](./WTL/) |
+| Reference documents | [RES](./RES/) |
 
-## Repository Map
+## Subjects
+
+| Subject | What is included | Index |
+| --- | --- | --- |
+| Artificial Intelligence and Machine Learning | DFS/BFS, classification, regression, perceptrons, and MLPs | [Open AIML](./AIML/) |
+| Soft Computing | Numbered experiment folders and a perceptron implementation | [Open SC](./SC/) |
+| Theory of Computation and Systems | Tutorial notes and PDF submissions | [Open TCS](./TCS/) |
+| Web Technology Lab | AI-assisted webpages and a responsive security dashboard | [Open WTL](./WTL/) |
+
+## Repository Layout
 
 ```text
 SEM-V-ACADEMICS/
-├── AIML/                     # AI/ML experiments and datasets
-│   ├── EXP1/ ... EXP6/
-│   └── AIML SYLLABUS.pdf
+├── AIML/                     # AI/ML experiments and syllabus
 ├── SC/                       # Soft Computing experiments
-│   └── EXP1/ ... EXP5/
 ├── TCS/                      # Tutorials and tutorial PDFs
-│   ├── Tutorial1/
-│   └── Tutorial2/
-├── WTL/                      # Web Technology Lab work
-│   ├── BOI Security Dashboard/
-│   └── EXP1/
-├── RES/                      # Reference PDFs and supporting material
-└── SEM-V-Syllabus.pdf
+├── WTL/                      # Web Technology Lab projects
+├── RES/                      # Reference documents
+└── SEM-V-Syllabus.pdf        # Semester-wide syllabus
 ```
 
-## Folder Conventions
+## How Work Is Organized
 
-- Each subject has its own README with links to the available work.
-- Each experiment or tutorial keeps its report, source code, data, screenshots, and supporting assets together.
-- Existing file names are preserved so that current links continue to work.
-- New work should use `README.md` for documentation and descriptive, consistent file names.
+- Subject folders contain a README with links to their experiments or tutorials.
+- Each experiment keeps its report, source code, data, screenshots, and supporting assets together.
+- Existing file names and folder paths are preserved so current links continue to work.
+- New work should use a numbered folder where appropriate and include a concise `README.md`.
 
-## Status
+## Current Status
 
-| Subject | Contents |
-| --- | --- |
-| AIML | Six experiment folders, with reports and code where available |
-| SC | Five experiment folders; EXP5 currently contains the implementation |
-| TCS | Two tutorial folders with PDF material |
-| WTL | One web experiment and one responsive dashboard project |
+- AIML contains five documented experiments; `EXP3` is not currently present.
+- SC contains five experiment folders; implementation material is currently available in `EXP5`.
+- TCS contains two tutorial folders with PDF material.
+- WTL contains one profile webpage experiment and one dashboard project.
